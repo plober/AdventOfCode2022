@@ -1,6 +1,5 @@
 #!/usr/bin/env python3.10
 
-
 lines, largo=[], []
 with open("input05.txt") as file_object:
   lines = file_object.readlines()
@@ -9,53 +8,90 @@ for line in lines:
   largo.append(line.rstrip())
 
 
-cortoTexto="""    [D]
+
+corto_texto="""    [D]
 [N] [C]
 [Z] [M] [P]
  1   2   3 """
 
-cortoInicial =[]
-for line in cortoTexto.split('\n'):
-   cortoInicial.append(line)
+corto_inicial =[]
+for line in corto_texto.split('\n'):
+   corto_inicial.append(line.rstrip())
+largo_inicial = largo[:9]
 
-cortoMovimientos=[  "move 1 from 2 to 1",
+   # cortoInicial= ["    [D]",
+   #                "   [N] [C]",
+   #                "   [Z] [M] [P]",
+   #                "    1   2   3 "]
+
+corto_movimientos=[  "move 1 from 2 to 1",
                     "move 3 from 1 to 3",
                     "move 2 from 2 to 1",
                     "move 1 from 1 to 2"]
+largo_movimientos=largo[10:]
 # Stacks Página 615
 
-class CalcularA:
-
-    def parseoSituacion(Situacion):
+class Inputs:
+    def parseo_situacion(situacion):
         #[x for x in beta if x not in "[]"][::2]
-        Situacion.reverse()
-        renglones = len (Situacion)
-        largo = len (Situacion[0])
-        DiccionarioPilas = dict={}
+        situacion.reverse()
+        renglones = len (situacion)
+        largo = len (situacion[0])
+        diccionario_pilas = {}
+        traspuesto=""
+        for caracter_columna in range(len(situacion[0]))[1::4]:
+            traspuesto = ['{: <{}}'.format(fila,largo)[caracter_columna] for fila in situacion]
+            diccionario_pilas[int(traspuesto[0])] = ''.join(traspuesto[1:]).strip()
+        return diccionario_pilas
 
-        for caracterColumna in range(len(Situacion[0]))[1::4]:
-            Traspuesto = ['{: <{}}'.format(fila,largo)[caracterColumna] for fila in Situacion]
-            DiccionarioPilas[int(Traspuesto[0])] = ''.join(Traspuesto[1:]).strip()
-        return DiccionarioPilas
+    def parseo_movimientos(movimientos):
+        actividad=[]
+        for linea in movimientos:
+            # _, uno, _, dos, _, tres = linea.split()
+            # Mejor
+            # uno, dos, tres = linea.split()[1::2]
+            # actividad.append([int(uno), int(dos), int(tres)])
+            # Mucho mejor
+            actividad.append([int(valor) for valor in linea.split()[1::2]])
 
-    def parseoMovimientos(Movimientos):
-        Actividad=[]
-        for linea in Movimientos:
-            [trash, uno, trash, dos, trash, tres] = linea.split()
-            Actividad.append([int(uno), int(dos), int(tres)])
-        return Actividad
+        return actividad
+
+class Respuesta:
+    def ejecucion_movimientos(diccionario_pilas, instrucciones):
+        # Mueve de a uno
+        for comando in instrucciones:
+            # comando = "move 3 from 1 to 3" -> [3,1,3]
+            [cuantos, desde, hacia] = comando
+            #"move {} from {} to {}".format(cuantos, desde, hacia)
+            for _ in range(cuantos):
+                diccionario_pilas[hacia] = diccionario_pilas[hacia] + diccionario_pilas[desde][-1]
+                diccionario_pilas[desde] = diccionario_pilas[desde][:-1]
+        return ''.join([valor[-1] for valor in diccionario_pilas.values()])
+
+    def ejecucion_movimientos_b(diccionario_pilas, instrucciones):
+        # Mueve todos juntos
+        print(diccionario_pilas)
+        for comando in instrucciones:
+            [cuantos, desde, hacia] = comando
+            diccionario_pilas[hacia] = diccionario_pilas[hacia] + diccionario_pilas[desde][-cuantos:]
+            diccionario_pilas[desde] = diccionario_pilas[desde][:-cuantos]
+        return ''.join([valor[-1] for valor in diccionario_pilas.values()])
 
 
-    def solucionar(SituacionInicial, Movimientos):
-        pass
+#        for comando in instrucciones:
 
+respuesta_corta_a = Respuesta.ejecucion_movimientos(Inputs.parseo_situacion(corto_inicial.copy()),Inputs.parseo_movimientos(corto_movimientos.copy()))
+respuesta_a = Respuesta.ejecucion_movimientos(Inputs.parseo_situacion(largo_inicial.copy()),Inputs.parseo_movimientos(largo_movimientos.copy()))
+respuesta_corta_b = Respuesta.ejecucion_movimientos_b(Inputs.parseo_situacion(corto_inicial.copy()),Inputs.parseo_movimientos(corto_movimientos.copy()))
+respuesta_b = Respuesta.ejecucion_movimientos_b(Inputs.parseo_situacion(largo_inicial.copy()),Inputs.parseo_movimientos(largo_movimientos.copy()))
 
-RespuestaCortaA, RespuestaA, RespuestaCortaB, RespuestaB = 'N/A', 'N/A', 'N/A', 'N/A'
+assert Inputs.parseo_situacion(corto_inicial.copy()) == {1:"ZN",2:"MCD", 3:"P"}
+assert Inputs.parseo_movimientos(corto_movimientos.copy()) == [[1,2,1],[3,1,3],[2,2,1],[1,1,2]]
+assert Respuesta.ejecucion_movimientos(Inputs.parseo_situacion(corto_inicial.copy()),Inputs.parseo_movimientos(corto_movimientos.copy())) == "CMZ"
+print("	La respuesta del Ejemplo A es " + str(respuesta_corta_a))
+print("	La respuesta A es " + str(respuesta_a))
 
-assert CalcularA.parseoSituacion(cortoInicial)=={1:"ZN",2:"MCD", 3:"P"}
-assert CalcularA.parseoMovimientos(cortoMovimientos)==[[1,2,1],[3,1,3],[2,2,1],[1,1,2]]
-#assert CalcularA.solucionar(cortoInicial,cortoMovimientos)=="CMZ"
-print("	La respuesta del Ejemplo A es " + str(RespuestaCortaA))
-print("	La respuesta A es " + str(RespuestaA))
-print("	La respuesta del Ejemplo B es " + str(RespuestaCortaB))
-print("	La respuesta B es " + str(RespuestaB))
+assert Respuesta.ejecucion_movimientos_b(Inputs.parseo_situacion(corto_inicial.copy()),Inputs.parseo_movimientos(corto_movimientos.copy())) == "MCD"
+
+print("	La respuesta del Ejemplo B es " + str(respuesta_corta_b))
+print("	La respuesta B es " + str(respuesta_b))
