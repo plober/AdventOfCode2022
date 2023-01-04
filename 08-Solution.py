@@ -14,23 +14,20 @@ corto="""30373
 33549
 35390""".split('\n')
 
-visible="""10000
-02000
-00300
-00040
-00005""".split('\n')
-
 class TreeTopTarp:
 
     def __init__(self, plano):
         self.plano = plano
         self.largo = len(plano)
-        self.traspuesto = ["" for _ in range(len(plano))]
-        self.plano_visible = ["" for _ in range(len(plano))]
+        self.traspuesto = self.trasponer(plano)
+        self.bosque_visible=["_"* self.largo] * self.largo
+
+    def trasponer(self, plano):
+        traspuesto = ["" for _ in range(len(plano))]
         for fila in range(len(plano[0])):
             for columna in range(len(plano[fila])):
-                self.traspuesto[fila] += plano[columna][fila]
-                self.plano_visible[fila] += "_"
+                traspuesto[fila] += plano[columna][fila]
+        return traspuesto
 
     def visibilidad(self, ingreso, explica=False):
         conteo = 0
@@ -92,16 +89,16 @@ class TreeTopTarp:
         for regla in self.visibilidad([linea[::-1] for linea in self.traspuesto]):
             desde_sur.append(regla)
             # print(regla)
-        
-        self.bosque_visible=["_"* self.largo] * self.largo
 
+        self.reemplazar_si_es_visible(desde_este, desde_oeste, desde_norte, desde_sur)
+        return self.bosque_visible
+
+    def reemplazar_si_es_visible(self, desde_este, desde_oeste, desde_norte, desde_sur):
         for i in range(self.largo):
             for j in range(self.largo):
                 # Mandar a self.bosque_visible[i][j] lo que sea diferente de "_"
                 desde_o, desde_e, desde_n, desde_s = desde_oeste[i][j] , desde_este[i][-j-1], desde_norte[j][i], desde_sur[j][-i-1]
-
                 punto={desde_o, desde_e, desde_n, desde_s}
-
                 if punto == {"_"}:
                     self.bosque_visible[i] = self.bosque_visible[i][:j] + "_" + self.bosque_visible[i][j+1:]
                 elif len(punto - {"_"}) == 1:
@@ -124,13 +121,8 @@ class TreeTopTarp:
                     print("Desde sur: "+ desde_s)
                     print("-"*5)
 
-                # print(i,j,self.bosque_visible)
-        
-        self.mostrar_cosas()
-        return self.bosque_visible
-
-    def mostrar_cosas(self):
-        for renglon in self.bosque_visible:
+    def mostrar_bosque(self):
+        for renglon in self.vision_360():
             print(renglon)
 
     def contar_visibles(self):
@@ -139,47 +131,20 @@ class TreeTopTarp:
             for arbol_visible in renglon:
                 if arbol_visible != "_": conteo += 1
         return conteo
-            
-    def visiones_cardinales(self):
-        desde_este, desde_oeste, desde_norte, desde_sur = [],[],[],[]
-        for regla in self.visibilidad(self.plano):
-            desde_oeste.append(regla)
-            # print(regla)
-        # print("---")    
-        for regla in self.visibilidad([linea[::-1] for linea in self.plano]):
-            desde_este.append(regla)
-            # print(regla)
-        # print("---")    
-        for regla in self.visibilidad(self.traspuesto):
-            desde_norte.append(regla)
-            # print(regla)
-        # print("---")    
-        for regla in self.visibilidad([linea[::-1] for linea in self.traspuesto]):
-            desde_sur.append(regla)
-            # print(regla)
-        print("print")
-        for i in range(self.largo):
-            print(desde_oeste[i][j] , desde_este[i][-j], desde_norte[j][i], desde_sur[-j][-i])
-            
-# 10000
-# 02000
-# 00300
-# 00040
-# 00005
-# respuestas_faciles= TreeTopTarp(visible)
-# respuestas_faciles.vision_360()
 
-respuestas_cortas= TreeTopTarp(corto)
+respuestas_cortas = TreeTopTarp(corto)
 respuestas_cortas.vision_360()
+respuestas_cortas.mostrar_bosque()
+print ("-"*5)
 assert respuestas_cortas.visibles_desde_derecha()==11,  "Desde la Derecha se tendrían que ver 11 y se ven "+str(respuestas_cortas.visibles_desde_derecha(True))
 assert respuestas_cortas.visibles_desde_izquierda()==11,"Desde la Izquierda se tendrían que ver 11 y se ven "+str(respuestas_cortas.visibles_desde_izquierda(True))
 assert respuestas_cortas.visibles_desde_arriba()==10,   "Desde Arriba se tendrían que ver 10 y se ven "+str(respuestas_cortas.visibles_desde_arriba(True))
 assert respuestas_cortas.visibles_desde_abajo()==8,     "Desde Abajo se tendrían que ver 8 y se ven "+str(respuestas_cortas.visibles_desde_abajo(True))
-
 assert respuestas_cortas.contar_visibles() == 21, "Deberían verse 21 y se ven"
 
-respuestas_largas= TreeTopTarp(largo)
+respuestas_largas = TreeTopTarp(largo)
 respuestas_largas.vision_360()
+respuestas_largas.mostrar_bosque()
 
 RespuestaA, RespuestaB = respuestas_largas.contar_visibles(), 'N/A'
 
