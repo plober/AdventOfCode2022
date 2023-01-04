@@ -121,8 +121,14 @@ class TreeTopTarp:
                     print("Desde sur: "+ desde_s)
                     print("-"*5)
 
-    def mostrar_bosque(self):
+    def mostrar_bosque_visible_desde_afuera(self):
+        print("Mostrar el bosque")
         for renglon in self.vision_360():
+            print(renglon)
+
+    def mostrar_bosque_entero(self):
+        print("Mostrar el bosque")
+        for renglon in self.plano:
             print(renglon)
 
     def contar_visibles(self):
@@ -131,10 +137,80 @@ class TreeTopTarp:
             for arbol_visible in renglon:
                 if arbol_visible != "_": conteo += 1
         return conteo
+    
+    def calculo_puntaje(self, i,j):
+        return (self.panorama_pal_este(i,j) * \
+                self.panorama_pal_oeste(i,j) * \
+                self.panorama_pal_norte(i,j) * \
+                self.panorama_pal_sur(i,j))
+
+    def panorama_pal_este(self, i, j, vidente=False):
+        panorama = self.plano
+        h_maxima = int(panorama[i][j])
+        # print("{} en {}".format(h_maxima, self.plano[i][j+1:]))
+        if vidente: self.vidente_variables(i, j, panorama, h_maxima, "Este")
+        conteo=0
+        for arbol in panorama[i][j+1:]:
+            if int(arbol) < h_maxima: conteo+=1
+            else: 
+                conteo+=1
+                break   
+        return conteo
+
+    def panorama_pal_oeste(self, i, j, vidente=False):
+        panorama = self.plano
+        h_maxima = int(panorama[i][j])        
+        if vidente: self.vidente_variables(i, j, panorama, h_maxima, "Oeste")
+        conteo=0
+        for arbol in panorama[i][j-1::-1]:
+            if int(arbol) < h_maxima: conteo+=1
+            else: 
+                conteo+=1
+                break
+        return conteo
+
+    def panorama_pal_norte(self, j, i, vidente = False):
+        panorama = self.trasponer(self.plano)
+        h_maxima = int(panorama[i][j])                
+        if vidente: self.vidente_variables(i, j, panorama, h_maxima, "Norte")
+        conteo=0
+        for arbol in panorama[i][j-1::-1]:
+            if int(arbol) < h_maxima: conteo+=1
+            else: 
+                conteo+=1
+                break
+        return conteo
+
+    def panorama_pal_sur(self, j, i, vidente = False):
+        panorama = self.trasponer(self.plano)
+        h_maxima = int(panorama[i][j])                
+        if vidente: self.vidente_variables(i, j, panorama, h_maxima, "Sur")
+        conteo=0
+        for arbol in panorama[i][j+1:]:
+            if int(arbol) < h_maxima: conteo+=1
+            else: 
+                conteo+=1
+                break   
+        return conteo
+
+    def vidente_variables(self, i, j, panorama, h_maxima, origen):
+        print(" {}: {} en {} mirando para {}".format(origen, h_maxima, panorama[i][:], panorama[i][j+1:]))
+        print("  ({},{}) // {}".format(i,j,panorama[i][:]))
+    
+    def maximo_puntaje_del_interior(self):
+        maximo = 0
+        for i in range(1, self.largo-1):
+            for j in range (1, self.largo-1):
+                nuevo = self.calculo_puntaje(i,j)
+                if maximo <= nuevo:  
+                    maximo = nuevo
+                    print ("Máximo de {} encontrado en ({},{})".format(maximo, i, j))
+
+        return maximo
 
 respuestas_cortas = TreeTopTarp(corto)
 respuestas_cortas.vision_360()
-respuestas_cortas.mostrar_bosque()
+respuestas_cortas.mostrar_bosque_entero()
 print ("-"*5)
 assert respuestas_cortas.visibles_desde_derecha()==11,  "Desde la Derecha se tendrían que ver 11 y se ven "+str(respuestas_cortas.visibles_desde_derecha(True))
 assert respuestas_cortas.visibles_desde_izquierda()==11,"Desde la Izquierda se tendrían que ver 11 y se ven "+str(respuestas_cortas.visibles_desde_izquierda(True))
@@ -144,9 +220,41 @@ assert respuestas_cortas.contar_visibles() == 21, "Deberían verse 21 y se ven"
 
 respuestas_largas = TreeTopTarp(largo)
 respuestas_largas.vision_360()
-respuestas_largas.mostrar_bosque()
+# respuestas_largas.mostrar_bosque()
 
-RespuestaA, RespuestaB = respuestas_largas.contar_visibles(), 'N/A'
+print("Primera Tanda, (1,2)")
+assert respuestas_cortas.panorama_pal_este(1,2)==2,     "Este, si miro se tienen que ver 2 arboles y se ven: " + str(respuestas_cortas.panorama_pal_este(1,2))
+assert respuestas_cortas.panorama_pal_oeste(1,2)==1,    "Oeste, si miro se tiene que ver 1 arbol y se ven: " + str(respuestas_cortas.panorama_pal_oeste(1,2))
+assert respuestas_cortas.panorama_pal_norte(1,2)==1,    "Norte, si miro se tiene que ver 1 arbol y se ven: " + str(respuestas_cortas.panorama_pal_norte(1,2))
+assert respuestas_cortas.panorama_pal_sur(1,2)==2,      "Sur, si miro se tienen que ver 2 arboles y se ven: " + str(respuestas_cortas.panorama_pal_sur(1,2))
+assert respuestas_cortas.calculo_puntaje(1,2)==4,       "Puntaje debería ser 4"
+
+print("Segunda Tanda, (3,2, True)")
+vidente=False
+assert respuestas_cortas.panorama_pal_este(3,2, vidente)==2,     "Este, si miro se tiene que ver 2 arboles y se ven: " + str(respuestas_cortas.panorama_pal_este(3,2, vidente))
+assert respuestas_cortas.panorama_pal_oeste(3,2, vidente)==2,    "Oeste, si miro se tiene que ver 2 arboles y se ven: " + str(respuestas_cortas.panorama_pal_oeste(3,2, vidente))
+assert respuestas_cortas.panorama_pal_norte(3,2, vidente)==2,    "Norte, si miro se tiene que ver 2 arboles y se ven: " + str(respuestas_cortas.panorama_pal_norte(3,2, vidente))
+assert respuestas_cortas.panorama_pal_sur(3,2, vidente)==1,      "Sur, si miro se tiene que ver 1 arbol y se ven: " + str(respuestas_cortas.panorama_pal_sur(3,2, vidente))
+assert respuestas_cortas.calculo_puntaje(3,2)==8,       "Puntaje debería ser 8"
+assert respuestas_cortas.maximo_puntaje_del_interior()==8,       "Puntaje debería ser 8"
+
+# 30373      3          3   
+# 25512    25512        5   
+# 65332      3          3   
+# 33549      5        33549 
+# 35390      3          3   
+# pos      (2,1)      (2,3)             
+# pts:       4          8
+#        (2*1*2*1)  (2*2*2*1)
+
+
+
+"""Looking up, its view is not blocked; it can see 1 tree (of height 3).
+Looking left, its view is blocked immediately; it can see only 1 tree (of height 5, right next to it).
+Looking right, its view is not blocked; it can see 2 trees.
+Looking down, its view is blocked eventually; it can see 2 trees (one of height 3, then the tree of height 5 that blocks its view)."""
+print("Calculando rta B")
+RespuestaA, RespuestaB = respuestas_largas.contar_visibles(), respuestas_largas.maximo_puntaje_del_interior()
 
 print("	La respuesta A es " + str(RespuestaA))
 print("	La respuesta B es " + str(RespuestaB))
