@@ -19,7 +19,7 @@ for line in corto_texto.split('\n'):
    corto_inicial.append(line.rstrip())
 largo_inicial = largo[:9]
 
-   # cortoInicial= ["    [D]",
+   # cortoInicial= ["       [D]",
    #                "   [N] [C]",
    #                "   [Z] [M] [P]",
    #                "    1   2   3 "]

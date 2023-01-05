@@ -9,7 +9,7 @@ largo = largo[0].rstrip()
 
 class TunningTrouble:
     def repetidos(cadena,cantidad=4):
-        #string = "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
+        # string = "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
         # print(cadena)
         ocurrencia_en_caracter = 0
         for observando in range(cantidad, len(cadena)):
@@ -20,18 +20,17 @@ class TunningTrouble:
         return ocurrencia_en_caracter
 
 
-assert TunningTrouble.repetidos("mjqjpqmgbljsphdztnvjfqwrcgsmlb") == 7
-assert TunningTrouble.repetidos("bvwbjplbgvbhsrlpgdmjqwftvncz") ==5
-assert TunningTrouble.repetidos("nppdvjthqldpwncqszvftbrmjlhg") ==6
-assert TunningTrouble.repetidos("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg") ==10
-assert TunningTrouble.repetidos("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw") ==11
+assert TunningTrouble.repetidos("mjqjpqmgbljsphdztnvjfqwrcgsmlb"        ) ==  7
+assert TunningTrouble.repetidos("bvwbjplbgvbhsrlpgdmjqwftvncz"          ) ==  5
+assert TunningTrouble.repetidos("nppdvjthqldpwncqszvftbrmjlhg"          ) ==  6
+assert TunningTrouble.repetidos("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"     ) == 10
+assert TunningTrouble.repetidos("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"      ) == 11
 
-assert TunningTrouble.repetidos("mjqjpqmgbljsphdztnvjfqwrcgsmlb",14) == 19
-assert TunningTrouble.repetidos("bvwbjplbgvbhsrlpgdmjqwftvncz",14) ==23
-assert TunningTrouble.repetidos("nppdvjthqldpwncqszvftbrmjlhg",14) ==23
-assert TunningTrouble.repetidos("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg",14) ==29
-assert TunningTrouble.repetidos("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw",14) ==26
-
+assert TunningTrouble.repetidos("mjqjpqmgbljsphdztnvjfqwrcgsmlb"    ,14 ) == 19
+assert TunningTrouble.repetidos("bvwbjplbgvbhsrlpgdmjqwftvncz"      ,14 ) == 23
+assert TunningTrouble.repetidos("nppdvjthqldpwncqszvftbrmjlhg"      ,14 ) == 23
+assert TunningTrouble.repetidos("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg" ,14 ) == 29
+assert TunningTrouble.repetidos("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"  ,14 ) == 26
 
 
 RespuestaA, RespuestaB = TunningTrouble.repetidos(largo),  TunningTrouble.repetidos(largo,14)
