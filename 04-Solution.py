@@ -45,12 +45,14 @@ class CampCleanup:
         return cantidad_encontrados
 
     def uno_contenido_en_otro_oneliner(tramos):
-        """Premature Optimization Is the Root of All Evil"""
+        """Premature Optimization Is the Root of All Evil.
+        Primero paso de '5-7,7-9' a '[5,7,7,9]' y después las cuento si una está dentro de otra"""
 
-        final = [menor_1 for (menor_1, mayor_1, menor_2, mayor_2) in [terna.replace(",","-").split("-") for terna in tramos] \
-             if (int(menor_1) <= int(menor_2) and int(mayor_2) <= int(mayor_1)) \
-             or (int(menor_2) <= int(menor_1) and int(mayor_1) <= int(mayor_2))]
+        # final = [menor_1 for (menor_1, mayor_1, menor_2, mayor_2) in [terna.replace(",","-").split("-") for terna in tramos] \
+        #      if (int(menor_1) <= int(menor_2) and int(mayor_2) <= int(mayor_1)) \
+        #      or (int(menor_2) <= int(menor_1) and int(mayor_1) <= int(mayor_2))]
         # TODO: ¿Cómo hago para mandarles el Int directamente? 
+
         # print("  Oneliner:")
         # for line in final[:2]:
         #     print("{}-{},{}-{}".format(line[0], line[1], line[2], line[3]))
@@ -67,8 +69,10 @@ class CampCleanup:
         # for line in set(rta_oneliner)-set(contenidos_encontrados):
         #     print(line)
 
-
-        return len(final)
+        # TODO: ¿Cómo hago para mandarles el Int directamente? 
+        return len([menor_1 for (menor_1, mayor_1, menor_2, mayor_2) in [terna.replace(",","-").split("-") for terna in tramos] \
+             if (int(menor_1) <= int(menor_2) and int(mayor_2) <= int(mayor_1)) \
+             or (int(menor_2) <= int(menor_1) and int(mayor_1) <= int(mayor_2))])
 
             
     def hay_intersecciones(tramos):
