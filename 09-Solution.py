@@ -31,7 +31,7 @@ class RopeBridge:
         self.camino_cola = [(0, 0),]
         # Posiciones [0] es arriba/abajo y [1] es derecha/izq
         self.iniciar_diccionarios()
-        self.posicion_relativa()
+        self.posicion_relativa(self.camino_cabeza[-1], self.camino_cola[-1])
         self.mover_vibora()
         # ['NO', 'N',    'NE',
         #   'O', "Encima", 'E',
@@ -61,10 +61,10 @@ class RopeBridge:
                                       (1, -1): "NO"
                                       }
 
-    def posicion_relativa(self):
+    def posicion_relativa(self, adelante, atras):
         """Posición relativa es ['N', 'NE', 'E', "SE", 'S', 'SO', 'O', "NO", "Encima"] o "Muy lejos"""
-        diferencia_posiciones = (self.camino_cabeza[-1][0] - self.camino_cola[-1][0],
-                                 self.camino_cabeza[-1][1] - self.camino_cola[-1][1])
+        diferencia_posiciones = (adelante[0] - atras[0],
+                                 adelante[1] - atras[1])
         return self.posiciones_orientadas.get(diferencia_posiciones, "Muy Lejos")
 
     def armar_mapa(self, alto, ancho, offset=(0, 0)):
@@ -98,27 +98,35 @@ class RopeBridge:
 # ....#.
 # s###..
 
-    def mover_vibora(self, vidente = False):
-        if vidente: print("Posición Inicial: {}".format(self.camino_cola[-1]))
+    def mover_vibora(self, vidente=False):
+        if vidente:
+            print("Posición Inicial: {}".format(self.camino_cola[-1]))
+
         for instruccion in self.instrucciones:
+            # instruccion = "U 26"
+            mas_cabeza, mas_cola= self.avanza_instruccion(
+                self.direccion_diccionario[instruccion[0]],
+                int(instruccion[2:]),
+                [self.camino_cabeza[-1]],
+                [self.camino_cola[-1]],
+                vidente)
+            self.camino_cabeza.extend(mas_cabeza)
+            self.camino_cola.extend(mas_cola)
 
-            direccion, avanza = self.direccion_diccionario[instruccion[0]], int(
-                instruccion[2:])
-            # self.posicion_cabeza
+    def avanza_instruccion(self, direccion, avanza, lider, seguidor, vidente=False):
 
-            for _ in range(1, min(3, avanza+1)):
-                self.camino_cabeza.append((self.camino_cabeza[-1][0] + direccion[0],
-                                           self.camino_cabeza[-1][1] + direccion[1]))
-                posicion_relativa = self.posicion_relativa()
-                if posicion_relativa == "Muy Lejos":
-                    self.camino_cola.append(self.camino_cabeza[-2])
+        # self.posicion_cabeza
 
-            for _ in range(3, 1 + avanza):
-                self.camino_cola.append(self.camino_cabeza[-1])
-                self.camino_cabeza.append((self.camino_cabeza[-1][0] + direccion[0],
-                                           self.camino_cabeza[-1][1] + direccion[1]))
-            if vidente: print("Instrucción: {}; posición: {}".format(
-                instruccion, self.camino_cola[-1]))
+        for _ in range(1, avanza+1):
+            lider.append((lider[-1][0] + direccion[0],
+                          lider[-1][1] + direccion[1]))
+            posicion_relativa = self.posicion_relativa(lider[-1], seguidor[-1])
+            if posicion_relativa == "Muy Lejos":
+                seguidor.append(lider[-2])
+        if vidente:
+            print("incremento: {}; posición: {}".format(
+                (direccion[0] * avanza , direccion[1] * avanza), seguidor[-1]))
+        return lider, seguidor
 
     def conteo_pasos_registrados_propio(self):
         return self.conteo_pasos_registrados(self.camino_cola)
@@ -132,7 +140,7 @@ rta_corta = RopeBridge(corto)
 assert rta_corta.conteo_pasos_registrados_propio() == 13
 
 
-rta_larga=RopeBridge(largo)
+rta_larga = RopeBridge(largo)
 RespuestaA, RespuestaB = rta_larga.conteo_pasos_registrados_propio(), 'N/A'
 
 

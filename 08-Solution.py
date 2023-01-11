@@ -1,11 +1,7 @@
 #!/usr/bin/env python3.10
 
 lines, largo = [], []
-with open("input08.txt") as file_object:
-    lines = file_object.readlines()
-
-for line in lines:
-    largo.append(line.rstrip())
+largo = [line.rstrip() for line in open("input08.txt")]
 
 
 corto = """30373
