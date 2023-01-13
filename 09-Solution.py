@@ -32,7 +32,7 @@ class RopeBridge:
         # Posiciones [0] es arriba/abajo y [1] es derecha/izq
         self.iniciar_diccionarios()
         self.posicion_relativa(self.camino_cabeza[-1], self.camino_cola[-1])
-        self.mover_vibora()
+        self.mover_vibora_2()
         # ['NO', 'N',    'NE',
         #   'O', "Encima", 'E',
         #   'SO', 'S',    'SE',]
@@ -98,7 +98,22 @@ class RopeBridge:
 # ....#.
 # s###..
 
-    def mover_vibora(self, vidente=False):
+    def mover_vibora_2(self, vidente=False):
+        if vidente:
+            print("Posición Inicial: {}".format(self.camino_cola[-1]))
+
+        for instruccion in self.instrucciones:
+            # instruccion = "U 26"
+            mas_cabeza, mas_cola= self.avanza_instruccion(
+                self.direccion_diccionario[instruccion[0]],
+                int(instruccion[2:]),
+                [self.camino_cabeza[-1]],
+                [self.camino_cola[-1]],
+                vidente)
+            self.camino_cabeza.extend(mas_cabeza)
+            self.camino_cola.extend(mas_cola)
+    
+    def mover_vibora_10(self, vidente=False):
         if vidente:
             print("Posición Inicial: {}".format(self.camino_cola[-1]))
 
@@ -114,7 +129,6 @@ class RopeBridge:
             self.camino_cola.extend(mas_cola)
 
     def avanza_instruccion(self, direccion, avanza, lider, seguidor, vidente=False):
-
         # self.posicion_cabeza
 
         for _ in range(1, avanza+1):
