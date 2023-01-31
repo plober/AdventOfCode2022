@@ -34,10 +34,11 @@ class DistressSignal:
 
     def __init__(self, señal):
         self.señal = señal
-        self.señal_desordenada =  [linea for linea in señal if linea != ''] +[[[2]]] + [[[6]]]
 
         self.comparables = [(eval(señal[posteo[0]]), eval(señal[posteo[1]])) for posteo in [
             (numero, numero+1) for numero in range(0, len(señal), 3)]]
+
+        self.señal_a_ordenar =  [eval(linea) for linea in señal if linea != ''] +[[[2]]] + [[[6]]]
 
     def par_en_orden_correcto(self, renglon1, renglon2):
         return self.compara_solo_enteros(renglon1, renglon2)
@@ -58,7 +59,7 @@ False""".splitlines()
                     f"deberia ser {rta_comparada[valor]}" if eval(rta_comparada[valor]) != comparado else ""))
                 # {:~<9s}
 
-        respuesta = sum((valor+1) * self.compara(dupla[0], dupla[1])
+        respuesta = sum((valor+1) * self.compara(dupla[0], dupla[1]) 
                         for valor, dupla in enumerate(self.comparables))
         return respuesta
 
@@ -97,10 +98,49 @@ False""".splitlines()
         # If the inputs are the same integer; continue checking the next part of the input.
         if izquierda < derecha: return True
         if izquierda > derecha: return False
-    
-    
-    
 
+##############################
+    def particion(self, lista: list, bajo: int, alto: int):
+    # choose the rightmost element as pivot
+        pivote = lista[alto]
+        # pointer for greater element
+        indice_mayor = bajo - 1
+        # traverse through all elements
+        # compare each element with pivot
+        for indice_menor in range(bajo, alto):
+            if self.compara(lista[indice_menor], pivote):
+                # If element smaller than pivot is found
+                # swap it with the greater element pointed by indice_mayor
+                indice_mayor = indice_mayor + 1
+                # Swapping element at indice_mayor with element at j
+                lista[indice_mayor], lista[indice_menor] = lista[indice_menor], lista[indice_mayor]
+        # Swap the pivot element with the greater element specified by indice_mayor
+        lista[indice_mayor + 1], lista[alto] = lista[alto], lista[indice_mayor + 1]
+        # Return the position from where partition is done
+        # for linea in lista: print(linea)
+        # print("-"*5)
+        return indice_mayor + 1
+ 
+# function to perform quicksort
+ 
+    def quickSort(self, lista: list, bajo:int, alto:int):
+        if bajo < alto:
+            # Find pivot element such that
+            # element smaller than pivot are on the left
+            # element greater than pivot are on the right
+            pi = self.particion(lista, bajo, alto)
+            # Recursive call on the left of pivot
+            self.quickSort(lista, bajo, pi - 1)
+            # Recursive call on the right of pivot
+            self.quickSort(lista, pi + 1, alto)
+#############################
+
+    def ordena(self):
+        tamaño = len(self.señal_a_ordenar)
+        self.quickSort(self.señal_a_ordenar, 0, tamaño - 1)
+    
+    def respuesta_B(self) -> int:
+        return (self.señal_a_ordenar.index([[2]])+1) * (self.señal_a_ordenar.index([[6]])+1)
 
 
 rta_corta = DistressSignal(corto)
@@ -116,9 +156,15 @@ assert rta_corta.compara([6, []], [7]) == True, f"No está comparando bien"
 assert rta_corta.compara([8, []], [7]) == False, f"No está comparando bien"
 assert rta_corta.compara([2, []], [7, [], []]) == True, f"No está comparando bien"
 
-rta_larga = DistressSignal(largo)
+print("-- parte B --\n")
+rta_corta.ordena()
+for linea in rta_corta.señal_a_ordenar: print(linea)
+print(f"Respuesta B: {rta_corta.respuesta_B()}")
 
-RespuestaA, RespuestaB = rta_larga.respuesta_final(), 'N/A'
+rta_larga = DistressSignal(largo)
+rta_larga.ordena()
+
+RespuestaA, RespuestaB = rta_larga.respuesta_final(), rta_larga.respuesta_B()
 
 
 print("	La respuesta A es " + str(RespuestaA))
