@@ -38,25 +38,24 @@ class MonkeyInTheMiddle:
         self.diccionario_de_monos = {}
         self.tranquilizacion = 3
         self.round = 1
-        self.pases = {"de 0 a 0" : 0,
-                        "de 1 a 0" : 0,
-                        "de 2 a 0" : 0,
-                        "de 3 a 0" : 0,
-                        "de 0 a 1" : 0,
-                        "de 1 a 1" : 0,
-                        "de 2 a 1" : 0,
-                        "de 3 a 1" : 0,
-                        "de 0 a 2" : 0,
-                        "de 1 a 2" : 0,
-                        "de 2 a 2" : 0,
-                        "de 3 a 2" : 0,
-                        "de 0 a 3" : 0,
-                        "de 1 a 3" : 0,
-                        "de 2 a 3" : 0,
-                        "de 3 a 3" : 0,
-                        }
-        
-        
+        self.pases = {"de 0 a 0": 0,
+                      "de 1 a 0": 0,
+                      "de 2 a 0": 0,
+                      "de 3 a 0": 0,
+                      "de 0 a 1": 0,
+                      "de 1 a 1": 0,
+                      "de 2 a 1": 0,
+                      "de 3 a 1": 0,
+                      "de 0 a 2": 0,
+                      "de 1 a 2": 0,
+                      "de 2 a 2": 0,
+                      "de 3 a 2": 0,
+                      "de 0 a 3": 0,
+                      "de 1 a 3": 0,
+                      "de 2 a 3": 0,
+                      "de 3 a 3": 0,
+                      }
+
         self.divisor = 1
         for registro_mono in lista_de_monos:
             self.diccionario_de_monos[int(registro_mono[0][7:-1])] = {
@@ -74,8 +73,6 @@ class MonkeyInTheMiddle:
             }
             self.divisor = self.divisor * int(registro_mono[3][21:])
 
-            
-
     def get_monkey_status(self, monkey_id=0):
         """Monkey 1:
                 Starting items: 54, 65, 75, 74
@@ -85,9 +82,9 @@ class MonkeyInTheMiddle:
                     If false: throw to monkey 0"""
         datos = self.diccionario_de_monos[monkey_id]
         estado = []
-        estado.append(f"Monkey {               monkey_id}:")
+        estado.append(f"Monkey {monkey_id}:")
         estado.append(
-            f"  Held items: {             datos['lista_items']    }")
+            f"  Held items: {                 datos['lista_items']    }")
         estado.append(
             f"  Operation: new = {            datos['operation']      }")
         estado.append(
@@ -97,12 +94,12 @@ class MonkeyInTheMiddle:
         estado.append(
             f"   If false: throw to monkey {  datos['tira_si_False']  }")
         estado.append(
-            f"   Inspecciones {  datos['inspecciones']  }")
+            f"   Inspecciones {               datos['inspecciones']  }")
         print([print(linea) for linea in estado])
         return datos
 
     def monkey_round(self):
-        self.round +=1
+        self.round += 1
         [self.monkey_turn(key) for key in self.diccionario_de_monos]
 
     def every_monkey_status(self):
@@ -167,21 +164,19 @@ class MonkeyInTheMiddle:
         [self.monkey_round() for _ in range(20)]
         return self.top_two_monkey_business_level()
 
-    def rta_B(self):
+    def rta_B(self, vidente=False):
         self.tranquilizacion = 1
         for round in range(10000):
-        #     # if round in [1, 20, 1000]:
-        #     if round in [1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]:
-        #         print(f"\n== After round {round} ==")
-        #         [print(f"Monkey {monkey_id} inspected items {self.diccionario_de_monos[monkey_id]['inspecciones']} times.")
-        #          for monkey_id in self.diccionario_de_monos]
-        #         # for key, value in self.pases.items():
-        #         #     if value > 0: print(f"{key}: {value}") 
-        #     [print(f"Monkey {monkey_id} inspected items {self.diccionario_de_monos[monkey_id]['inspecciones']} times.")
-        #          for monkey_id in self.diccionario_de_monos]
+            # if round in [1, 20, 1000]:
+            if round in [1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]:
+                print(f"\n== After round {round} ==")
+                [print(f"Monkey {monkey_id} inspected items {self.diccionario_de_monos[monkey_id]['inspecciones']} times.")
+                 for monkey_id in self.diccionario_de_monos]
+                # for key, value in self.pases.items():
+                #     if value > 0: print(f"{key}: {value}")
 
             self.monkey_round()
-        
+
         return self.top_two_monkey_business_level()
 
 

@@ -68,6 +68,7 @@ class RopeBridge:
         return self.posiciones_orientadas.get(diferencia_posiciones, "Muy Lejos")
 
     def armar_mapa(self, alto, ancho, offset=(0, 0)):
+        # debería haber usado mapa = [["." for _ in range(dimension[1])] for _ in range(dimension[0])]
         armando = ["." * (ancho + offset[1] + 1)] * (alto + offset[0] + 1)
         armando[-1-offset[0]] = ("." * offset[1] + "s"+"."*(ancho-1-offset[1]))
         return armando
@@ -98,13 +99,13 @@ class RopeBridge:
 # ....#.
 # s###..
 
-    def mover_vibora_2(self, vidente=False):
+    def mover_vibora_2(self, vidente=True):
         if vidente:
             print("Posición Inicial: {}".format(self.camino_cola[-1]))
 
         for instruccion in self.instrucciones:
             # instruccion = "U 26"
-            mas_cabeza, mas_cola= self.avanza_instruccion(
+            mas_cabeza, mas_cola = self.avanza_instruccion(
                 self.direccion_diccionario[instruccion[0]],
                 int(instruccion[2:]),
                 [self.camino_cabeza[-1]],
@@ -112,14 +113,14 @@ class RopeBridge:
                 vidente)
             self.camino_cabeza.extend(mas_cabeza)
             self.camino_cola.extend(mas_cola)
-    
+
     def mover_vibora_10(self, vidente=False):
         if vidente:
             print("Posición Inicial: {}".format(self.camino_cola[-1]))
 
         for instruccion in self.instrucciones:
             # instruccion = "U 26"
-            mas_cabeza, mas_cola= self.avanza_instruccion(
+            mas_cabeza, mas_cola = self.avanza_instruccion(
                 self.direccion_diccionario[instruccion[0]],
                 int(instruccion[2:]),
                 [self.camino_cabeza[-1]],
@@ -128,7 +129,7 @@ class RopeBridge:
             self.camino_cabeza.extend(mas_cabeza)
             self.camino_cola.extend(mas_cola)
 
-    def avanza_instruccion(self, direccion, avanza, lider, seguidor, vidente=False):
+    def avanza_instruccion(self, direccion, avanza, lider, seguidor, vidente=True):
         # self.posicion_cabeza
 
         for _ in range(1, avanza+1):
@@ -139,7 +140,7 @@ class RopeBridge:
                 seguidor.append(lider[-2])
         if vidente:
             print("incremento: {}; posición: {}".format(
-                (direccion[0] * avanza , direccion[1] * avanza), seguidor[-1]))
+                (direccion[0] * avanza, direccion[1] * avanza), seguidor[-1]))
         return lider, seguidor
 
     def conteo_pasos_registrados_propio(self):

@@ -18,8 +18,8 @@ class CathodeRayTube:
         # self.registro.extend([] for i in range(instrucciones))
         self.pantalla = ["."] * (40*6+1)
         self.parsear_instrucciones(instrucciones)
-        # for i in range(len(instrucciones)):
-        #     print("{}: {}, {}".format(i, self.registro[i], instrucciones[i]))
+        for i in range(len(instrucciones)):
+            print("{}: {}, {}".format(i, self.registro[i], instrucciones[i]))
 
     def parsear_instrucciones(self, instrucciones):
         for comando in instrucciones:
@@ -45,7 +45,7 @@ class CathodeRayTube:
             iluminado = (centro - 1) <= rolling_sum <= (centro + 1)
             print("{},{}".format(len(self.pantalla), centro))
             self.pantalla[centro] = "#" if iluminado else "_"
-        self.mostrar_pantalla() 
+        self.mostrar_pantalla()
 
     def mostrar_pantalla(self):
         [print("".join(self.pantalla[i:i+40])) for i in range(0, 241, 40)]
@@ -64,18 +64,18 @@ assert respuesta_muy_corta.medir_registro_X(5) == 4
 respuesta_casi_corta = CathodeRayTube(casi_corto)
 
 # print("Comienzo Casi_corta: {}".format(respuesta_casi_corta.instrucciones))
-# print("Prueba respuesta {}, {}".format(
-#     20, respuesta_casi_corta.medir_registro_X(20)))
-# print("Prueba respuesta {}, {}".format(
-#     60, respuesta_casi_corta.medir_registro_X(60)))
-# print("Prueba respuesta {}, {}".format(
-#     100, respuesta_casi_corta.medir_registro_X(100)))
-# print("Prueba respuesta {}, {}".format(
-#     140, respuesta_casi_corta.medir_registro_X(140)))
-# print("Prueba respuesta {}, {}".format(
-#     180, respuesta_casi_corta.medir_registro_X(180)))
-# print("Prueba respuesta {}, {}".format(
-#     220, respuesta_casi_corta.medir_registro_X(220)))
+print("Prueba respuesta {}, {}".format(
+    20, respuesta_casi_corta.medir_registro_X(20)))
+print("Prueba respuesta {}, {}".format(
+    60, respuesta_casi_corta.medir_registro_X(60)))
+print("Prueba respuesta {}, {}".format(
+    100, respuesta_casi_corta.medir_registro_X(100)))
+print("Prueba respuesta {}, {}".format(
+    140, respuesta_casi_corta.medir_registro_X(140)))
+print("Prueba respuesta {}, {}".format(
+    180, respuesta_casi_corta.medir_registro_X(180)))
+print("Prueba respuesta {}, {}".format(
+    220, respuesta_casi_corta.medir_registro_X(220)))
 
 assert respuesta_casi_corta.medir_registro_X(20) == 21
 assert respuesta_casi_corta.medir_registro_X(60) == 19
